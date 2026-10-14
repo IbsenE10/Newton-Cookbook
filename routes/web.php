@@ -1,11 +1,19 @@
 <?php
 
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RecipeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+
+// Recipes of one course, for example /recipes/category/desserts
+Route::get('/recipes/category/{category}', [RecipeController::class, 'category'])->name('recipes.category');
+
+// For now only index and show work. The other actions come when we use the database.
+Route::resource('recipes', RecipeController::class)->only(['index', 'show']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
