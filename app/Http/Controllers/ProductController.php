@@ -25,15 +25,8 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
         ]);
 
-        Product::create($validated);
         //info in database zetten
-        $product = new Product();
-        $product->name = $validated['name'];
-        $product->description = $validated['description'];
-        $product->price = $validated['price'];
-        $product -> image_url = 'temp';
-
-        $product->save();
+        Product::create($validated);
 
         return redirect()->route('products.index')
             ->with('status', 'Product created successfully.');

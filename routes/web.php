@@ -20,14 +20,12 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+// Only logged-in users can create, edit and delete.
+// This group must come before the public routes, otherwise /products/create
+// is read as /products/{product} with "create" as the id.
+Route::middleware('auth')->group(function () {
+    Route::resource('products', ProductController::class)->except(['index', 'show']);
+});
 
 // Anyone can view products
 Route::resource('products', ProductController::class)->only(['index', 'show']);
-
-//// Only logged-in users can create, edit and delete
-//Route::middleware('auth')->group(function () {
-//    Route::resource('products', ProductController::class)->except(['index', 'show']);
-//});
