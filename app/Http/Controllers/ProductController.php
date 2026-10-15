@@ -17,11 +17,6 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
-    public function create(): View
-    {
-        return view('products.create');
-    }
-
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -31,8 +26,21 @@ class ProductController extends Controller
         ]);
 
         Product::create($validated);
+        //info in database zetten
+        $product = new Product();
+        $product->name = $validated['name'];
+        $product->description = $validated['description'];
+        $product->price = $validated['price'];
+        $product -> image_url = 'temp';
+
+        $product->save();
 
         return redirect()->route('products.index')
             ->with('status', 'Product created successfully.');
+    }
+
+    public function create(): View
+    {
+        return view('products.create');
     }
 }
