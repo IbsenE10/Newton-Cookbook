@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "C:\\Users\\iamt4\\.config\\herd\\bin\\php84\\php.exe",
+            "args": [
+                "C:\\Users\\iamt4\\Development\\Newton-Cookbook\\artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
