@@ -43,4 +43,24 @@ class ProductController extends Controller
     {
         return view('products.create');
     }
+
+    public function show(Product $product)
+    {
+        return view('products.show', compact('product'));
+    }
+
+    public function edit(Product $product)
+    {
+        return view('products.edit', compact('product'));
+    }
+
+    public function update(Product $product)
+    {
+
+    }
+
+    public function destroy(Product $product)
+    {
+
+    }
 }

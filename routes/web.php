@@ -24,3 +24,10 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 
+// Anyone can view products
+Route::resource('products', ProductController::class)->only(['index', 'show']);
+
+//// Only logged-in users can create, edit and delete
+//Route::middleware('auth')->group(function () {
+//    Route::resource('products', ProductController::class)->except(['index', 'show']);
+//});
