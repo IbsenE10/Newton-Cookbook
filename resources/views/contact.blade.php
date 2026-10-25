@@ -1,9 +1,11 @@
-<x-layout>
+<x-layout title="Contact Us">
     <h1>Contact Us</h1>
     <p>If you have any questions or feedback, feel free to reach out to us using the form below.</p>
     <p>We'd love to hear from you!</p>
-    <div>
+    <x-card>
         <p>Place holder for form</p>
-    </div>
+    </x-card>
+
+
     <a href ="/">Return Home</a>
 </x-layout>
