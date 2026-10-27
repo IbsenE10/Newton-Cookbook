@@ -25,15 +25,8 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
         ]);
 
-//        Product::create($validated);
         //info in database zetten
-        $product = new Product();
-        $product->name = $validated['name'];
-        $product->description = $validated['description'];
-        $product->price = $validated['price'];
-//        $product -> image_url = 'temp';
-
-        $product->save();
+        Product::create($validated);
 
         return redirect()->route('products.index')
             ->with('status', 'Product created successfully.');
@@ -54,13 +47,26 @@ class ProductController extends Controller
         return view('products.edit', compact('product'));
     }
 
-    public function update(Product $product)
+    public function update(Request $request, Product $product): RedirectResponse
     {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'price' => ['required', 'numeric', 'min:0'],
+        ]);
 
+        //bestaande product in database aanpassen
+        $product->update($validated);
+
+        return redirect()->route('products.show', $product)
+            ->with('status', 'Product updated successfully.');
     }
 
-    public function destroy(Product $product)
+    public function destroy(Product $product): RedirectResponse
     {
+        $product->delete();
 
+        return redirect()->route('products.index')
+            ->with('status', 'Product deleted successfully.');
     }
 }

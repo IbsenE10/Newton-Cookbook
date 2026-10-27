@@ -2,14 +2,15 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
-Route::view('/about', 'about');
-Route::view('/contact', 'contact');
+Route::view('/', 'layouts.welcome');
+Route::view('/about', 'layouts.about');
+Route::view('/contact', 'layouts.contact');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('layouts.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -20,14 +21,11 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+// Only logged-in users can create, edit and delete
+// (registered first so /products/create isn't caught by /products/{product})
+Route::middleware('auth')->group(function () {
+    Route::resource('products', ProductController::class)->except(['index', 'show']);
+});
 
 // Anyone can view products
 Route::resource('products', ProductController::class)->only(['index', 'show']);
-
-//// Only logged-in users can create, edit and delete
-//Route::middleware('auth')->group(function () {
-//    Route::resource('products', ProductController::class)->except(['index', 'show']);
-//});

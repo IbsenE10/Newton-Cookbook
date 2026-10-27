@@ -12,6 +12,11 @@
             <h2>{{ $product->name }}</h2>
             <p>{{ $product->description }}</p>
             <p>{{ number_format((float) $product->price, 2) }}</p>
+
+            <a href="{{ route('products.show', $product) }}">View</a>
+            @auth
+                <a href="{{ route('products.edit', $product) }}">Edit</a>
+            @endauth
         </article>
     @empty
         <p>No products found.</p>

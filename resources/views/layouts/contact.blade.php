@@ -6,6 +6,5 @@
         <p>Place holder for form</p>
     </x-card>
 
-
     <a href ="/">Return Home</a>
 </x-layout>
