@@ -1,6 +1,9 @@
 <nav class="site-nav">
     <div class="site-nav__inner">
-        <a href="/" class="site-nav__brand">Newton's Cookbook</a>
+        <a href="/" class="site-nav__brand">
+            <img src="{{ asset('images/logo.webp') }}" alt="" class="site-nav__logo">
+            Newton's Cookbook
+        </a>
 
         <div class="site-nav__links">
             <a href="{{ route('products.index') }}" class="{{ request()->is('products*') ? 'is-active' : '' }}">Products</a>
