@@ -5,6 +5,10 @@
         <p>{{ session('status') }}</p>
     @endif
 
+    @if ($product->image_path)
+        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-96">
+    @endif
+
     <p>{{ $product->description }}</p>
     <p>{{ number_format((float) $product->price, 2) }}</p>
 
@@ -15,7 +19,7 @@
             @csrf
             @method('DELETE')
 
-            <button type="submit" onclick="return confirm('Delete this product?')">Delete</button>
+            <button type="submit" onclick="return confirm('Delete this product?')" class="rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700">Delete</button>
         </form>
     @endauth
 

@@ -1,6 +1,6 @@
 <x-app-layout>
     <h1>Create Product</h1>
-    <form action="{{ route('products.store') }}" method="POST">
+    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
       <div>
           <label for="name">Product Name</label>
@@ -23,6 +23,14 @@
             <label for="price">Product Price</label>
             <input type="number" id="price" name="price" placeholder="Product Price" step="0.01" min="0" value="{{ old('price') }}" >
             @error('price')
+                <p class="text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div>
+            <label for="image">Product Image</label>
+            <input type="file" id="image" name="image" accept="image/*">
+            @error('image')
                 <p class="text-red-600">{{ $message }}</p>
             @enderror
         </div>
