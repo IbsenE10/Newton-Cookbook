@@ -5,7 +5,11 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'layouts.welcome');
+Route::get('/', function () {
+    return view('layouts.welcome', [
+        'latestProduct' => Product::latest()->first(),
+    ]);
+});
 Route::view('/about', 'layouts.about');
 Route::view('/contact', 'layouts.contact');
 
