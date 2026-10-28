@@ -15,33 +15,9 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
-        return view('products.index', compact('products'));
-    }
+        $user = auth()->user();
 
-    public function store(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'image' => ['nullable', 'image', 'max:2048'],
-        ]);
-
-        //foto opslaan in storage/app/public/products
-        if ($request->hasFile('image')) {
-            $validated['image_path'] = $request->file('image')->store('products', 'public');
-        }
-
-        //info in database zetten
-        Product::create($validated);
-
-        return redirect()->route('products.index')
-            ->with('status', 'Product created successfully.');
-    }
-
-    public function create(): View
-    {
-        return view('products.create');
+        return view('products.index', compact('products', 'user'));
     }
 
     public function show(Product $product)
@@ -77,6 +53,32 @@ class ProductController extends Controller
 
         return redirect()->route('products.show', $product)
             ->with('status', 'Product updated successfully.');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'image' => ['nullable', 'image', 'max:2048'],
+        ]);
+
+        //foto opslaan in storage/app/public/products
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('products', 'public');
+        }
+
+        //info in database zetten
+        Product::create($validated);
+
+        return redirect()->route('products.index')
+            ->with('status', 'Product created successfully.');
+    }
+
+    public function create(): View
+    {
+        return view('products.create');
     }
 
     public function destroy(Product $product): RedirectResponse
