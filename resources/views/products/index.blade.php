@@ -45,21 +45,25 @@
                             <h2 class="product-card__title">
                                 <a href="{{ route('products.show', $product) }}">{{ $product->name }}</a>
                             </h2>
+                            <p class="product-card__author">by {{ $product->user?->name ?? 'unknown cook' }}</p>
                             <p class="product-card__text">{{ Str::limit($product->description, 110) }}</p>
 
                             <div class="product-card__actions">
                                 <a href="{{ route('products.show', $product) }}" class="btn btn--primary btn--sm">View</a>
 
-                                @auth
+                                {{-- alleen de maker ziet deze knoppen (zie ProductPolicy) --}}
+                                @can('update', $product)
                                     <a href="{{ route('products.edit', $product) }}" class="btn btn--outline btn--sm">Edit</a>
+                                @endcan
 
+                                @can('delete', $product)
                                     <form method="POST" action="{{ route('products.destroy', $product) }}">
                                         @csrf
                                         @method('DELETE')
 
                                         <button type="submit" onclick="return confirm('Delete this product?')" class="btn btn--danger btn--sm">Delete</button>
                                     </form>
-                                @endauth
+                                @endcan
                             </div>
                         </div>
                     </article>

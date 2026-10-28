@@ -6,6 +6,8 @@ use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -13,7 +15,8 @@ class ProductController extends Controller
     //
     public function index(): View
     {
-        $products = Product::all();
+        // with('user') haalt de makers in één keer op, in plaats van een query per product
+        $products = Product::with('user')->get();
 
         $user = auth()->user();
 
@@ -27,11 +30,15 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        Gate::authorize('update', $product);
+
         return view('products.edit', compact('product'));
     }
 
     public function update(Request $request, Product $product): RedirectResponse
     {
+        Gate::authorize('update', $product);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
@@ -69,8 +76,8 @@ class ProductController extends Controller
             $validated['image_path'] = $request->file('image')->store('products', 'public');
         }
 
-        //info in database zetten
-        Product::create($validated);
+        //info in database zetten, via de relatie wordt user_id automatisch ingevuld
+        Auth::user()->products()->create($validated);
 
         return redirect()->route('products.index')
             ->with('status', 'Product created successfully.');
@@ -83,6 +90,8 @@ class ProductController extends Controller
 
     public function destroy(Product $product): RedirectResponse
     {
+        Gate::authorize('delete', $product);
+
         //foto ook verwijderen
         if ($product->image_path) {
             Storage::disk('public')->delete($product->image_path);

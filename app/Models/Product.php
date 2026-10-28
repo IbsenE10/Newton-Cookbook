@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $description
  * @property float $price
  * @property string|null $image_path
+ * @property int|null $user_id
  */
 class Product extends Model
 {

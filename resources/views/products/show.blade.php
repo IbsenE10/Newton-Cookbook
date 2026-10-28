@@ -23,20 +23,23 @@
 
                 <p class="product-detail__text">{{ $product->description }}</p>
 
-                <p class="product-detail__meta">Added {{ $product->created_at?->diffForHumans() }}</p>
+                <p class="product-detail__meta">Added by {{ $product->user?->name ?? 'unknown cook' }}, {{ $product->created_at?->diffForHumans() }}</p>
 
-                @auth
-                    <div class="product-card__actions">
+                {{-- alleen de maker ziet deze knoppen (zie ProductPolicy) --}}
+                <div class="product-card__actions">
+                    @can('update', $product)
                         <a href="{{ route('products.edit', $product) }}" class="btn btn--outline">Edit</a>
+                    @endcan
 
+                    @can('delete', $product)
                         <form method="POST" action="{{ route('products.destroy', $product) }}">
                             @csrf
                             @method('DELETE')
 
                             <button type="submit" onclick="return confirm('Delete this product?')" class="btn btn--danger">Delete</button>
                         </form>
-                    </div>
-                @endauth
+                    @endcan
+                </div>
             </div>
         </article>
     </div>

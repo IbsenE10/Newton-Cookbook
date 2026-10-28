@@ -9,6 +9,9 @@
             <a href="{{ route('products.index') }}" class="{{ request()->is('products*') ? 'is-active' : '' }}">Products</a>
             <a href="/about" class="{{ request()->is('about') ? 'is-active' : '' }}">About</a>
             <a href="/contact" class="{{ request()->is('contact') ? 'is-active' : '' }}">Contact</a>
+            @can('view-admin')
+                <a href="/admin" class="{{ request()->is('admin*') ? 'is-active' : '' }}">Admin</a>
+            @endcan
 
             @auth
                 <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'is-active' : '' }}">Dashboard</a>
