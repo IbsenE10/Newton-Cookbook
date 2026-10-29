@@ -33,3 +33,10 @@ Route::middleware('auth')->group(function () {
 
 // Anyone can view products
 Route::resource('products', ProductController::class)->only(['index', 'show']);
+
+//Route::get('/admin', function () {
+//    Gate::authorize('view-admin');
+//    return view('layouts.admin');
+//})->middleware('auth');
+////ook andere manier is
+Route::view('/admin', 'layouts.admin')->middleware('auth')->can('view-admin');
