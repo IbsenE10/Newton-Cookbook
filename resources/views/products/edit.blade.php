@@ -20,6 +20,19 @@
                 </div>
 
                 <div class="form-field">
+                    <label for="category_id">Category</label>
+                    <select id="category_id" name="category_id" required>
+                        <option value="" disabled @selected(! old('category_id', $product->category_id))>Choose a category...</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" @selected(old('category_id', $product->category_id) == $category->id)>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="form-field">
                     <label for="description">Description</label>
                     <textarea id="description" name="description" rows="5">{{ old('description', $product->description) }}</textarea>
                     @error('description')

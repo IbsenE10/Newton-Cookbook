@@ -12,6 +12,16 @@ Route::get('/', function () {
 });
 Route::view('/about', 'layouts.about');
 Route::view('/contact', 'layouts.contact');
+Route::post('/contact', function (Illuminate\Http\Request $request) {
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'max:255'],
+        'issue' => ['required', 'string', 'min:10', 'max:2000'],
+    ]);
+
+    // het bericht wordt nog nergens opgeslagen of verstuurd, alleen gecontroleerd
+    return redirect('/contact')->with('status', "We received your message and will get back to you soon.");
+})->name('contact.send');
 
 Route::get('/dashboard', function () {
     return view('layouts.dashboard');

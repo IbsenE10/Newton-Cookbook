@@ -38,6 +38,9 @@
                                     <img src="{{ asset('images/logo.webp') }}" alt="">
                                 </span>
                             @endif
+                            @if ($product->category)
+                                <span class="category-badge category-badge--{{ Str::slug($product->category->name) }} product-card__category">{{ $product->category->name }}</span>
+                            @endif
                             <span class="product-card__price">€ {{ number_format((float) $product->price, 2, ',', '.') }}</span>
                         </a>
 

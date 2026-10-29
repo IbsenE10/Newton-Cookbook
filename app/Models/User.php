@@ -23,6 +23,10 @@ class User extends Authenticatable
         return $this->hasMany(Product::class);
     }
 
+    public function isAdmin(): bool{
+        return $this->id === 1; //Pepo is only Admin
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -34,9 +38,5 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function isAdmin(): bool{
-        return $this->id === 1; //Pepo is only Admin
     }
 }

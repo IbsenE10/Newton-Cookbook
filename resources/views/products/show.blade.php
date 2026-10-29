@@ -18,6 +18,9 @@
             </div>
 
             <div class="product-detail__body">
+                @if ($product->category)
+                    <span class="category-badge category-badge--{{ Str::slug($product->category->name) }}">{{ $product->category->name }}</span>
+                @endif
                 <h1 class="product-detail__title">{{ $product->name }}</h1>
                 <p class="product-detail__price">€ {{ number_format((float) $product->price, 2, ',', '.') }}</p>
 

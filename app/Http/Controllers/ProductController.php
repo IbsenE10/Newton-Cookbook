@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -15,8 +16,8 @@ class ProductController extends Controller
     //
     public function index(): View
     {
-        // with('user') haalt de makers in één keer op, in plaats van een query per product
-        $products = Product::with('user')->get();
+        // with() haalt de makers en categorieën in één keer op, in plaats van een query per product
+        $products = Product::with(['user', 'category'])->get();
 
         $user = auth()->user();
 
@@ -32,7 +33,10 @@ class ProductController extends Controller
     {
         Gate::authorize('update', $product);
 
-        return view('products.edit', compact('product'));
+        // voor de dropdown
+        $categories = Category::orderBy('id')->get();
+
+        return view('products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product): RedirectResponse
@@ -43,7 +47,11 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
+            'category_id' => ['required', 'exists:categories,id'],
             'image' => ['nullable', 'image', 'max:2048'],
+        ], [
+            'category_id.required' => 'Please choose a category.',
+            'category_id.exists' => 'Please choose one of the categories in the list.',
         ]);
 
         //nieuwe foto opslaan en de oude verwijderen
@@ -68,7 +76,11 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
+            'category_id' => ['required', 'exists:categories,id'],
             'image' => ['nullable', 'image', 'max:2048'],
+        ], [
+            'category_id.required' => 'Please choose a category.',
+            'category_id.exists' => 'Please choose one of the categories in the list.',
         ]);
 
         //foto opslaan in storage/app/public/products
@@ -85,7 +97,10 @@ class ProductController extends Controller
 
     public function create(): View
     {
-        return view('products.create');
+        // voor de dropdown
+        $categories = Category::orderBy('id')->get();
+
+        return view('products.create', compact('categories'));
     }
 
     public function destroy(Product $product): RedirectResponse
