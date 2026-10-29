@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Product;
@@ -7,7 +8,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('layouts.welcome', [
-        'latestProduct' => Product::latest()->first(),
+        // alleen zichtbare recepten op de homepage
+        'latestProduct' => Product::where('is_visible', true)->latest()->first(),
     ]);
 });
 Route::view('/about', 'layouts.about');
@@ -49,4 +51,10 @@ Route::resource('products', ProductController::class)->only(['index', 'show']);
 //    return view('layouts.admin');
 //})->middleware('auth');
 ////ook andere manier is
-Route::view('/admin', 'layouts.admin')->middleware('auth')->can('view-admin');
+//Route::view('/admin', 'layouts.admin')->middleware('auth')->can('view-admin');
+
+// Admin: alle routes in deze groep zijn alleen voor ingelogde admins
+Route::middleware(['auth', 'can:view-admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::patch('/products/{product}/visibility', [AdminController::class, 'toggleVisibility'])->name('products.visibility');
+});

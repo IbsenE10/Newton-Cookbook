@@ -95,8 +95,9 @@ a {
 .site-nav__links,
 .site-nav__auth {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 20px;
+    gap: 4px 20px;
 }
 
 /* pushes Login/Register to the right */
@@ -377,6 +378,106 @@ a {
     background: #d1e7dd;
     border: 1px solid #badbcc;
     border-radius: var(--radius);
+}
+
+/* ---------- Search and filter bar ---------- */
+
+.filter-bar {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 14px;
+}
+
+/* .search-box input wins from Tailwind's form reset */
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 14px 10px 42px;
+    font: inherit;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    /* magnifying glass icon */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 14px center;
+    border: 1px solid #ced4da;
+    border-radius: var(--radius);
+    box-shadow: none;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+
+.search-box input:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.2);
+}
+
+.filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.pill {
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-muted);
+    text-decoration: none;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.pill:hover {
+    color: var(--color-text);
+    border-color: #adb5bd;
+}
+
+/* the chosen pill; categories use their own label colour */
+.pill.is-active {
+    color: #fff;
+    background: var(--color-text);
+    border-color: var(--color-text);
+}
+
+.pill--appetizer.is-active {
+    background: #1e6b3a;
+    border-color: #1e6b3a;
+}
+
+.pill--main-dish.is-active {
+    background: #8a3b12;
+    border-color: #8a3b12;
+}
+
+.pill--dessert.is-active {
+    background: #8b1e5b;
+    border-color: #8b1e5b;
+}
+
+.results-info {
+    margin: 0 0 20px;
+    color: var(--color-muted);
+}
+
+.results-info strong {
+    color: var(--color-text);
+}
+
+.results-info a {
+    color: var(--color-primary);
 }
 
 /* grid of product cards */
@@ -753,6 +854,184 @@ a {
     justify-content: flex-end;
     gap: 10px;
     padding-top: 8px;
+}
+
+/* ---------- Admin page ---------- */
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-stat {
+    padding: 18px 20px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+}
+
+.admin-stat--visible {
+    border-left-color: #198754;
+}
+
+.admin-stat--hidden {
+    border-left-color: #adb5bd;
+}
+
+.admin-stat__number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-text);
+}
+
+.admin-stat__label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+}
+
+.admin-table__header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* the table scrolls sideways inside its card on small screens, not the whole page */
+.admin-table__wrap {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    padding: 12px 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-align: left;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    background: #fafbfc;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.admin-table td {
+    padding: 12px 20px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.admin-table tbody tr:hover {
+    background: #f8f9fb;
+}
+
+/* hidden recipes look a bit faded */
+.admin-table tr.is-hidden .admin-recipe {
+    opacity: 0.55;
+}
+
+.admin-table .category-badge {
+    margin: 0;
+}
+
+.admin-table__actions-head {
+    text-align: right !important;
+}
+
+.admin-recipe {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.admin-recipe:hover span {
+    color: var(--color-primary);
+}
+
+.admin-recipe img {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.admin-recipe__placeholder {
+    object-position: center top;
+    background: #f8f3ec;
+}
+
+.admin-muted {
+    color: var(--color-muted);
+    white-space: nowrap;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 999px;
+}
+
+/* little coloured dot in front of the status */
+.status::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.status--visible {
+    color: #146c43;
+    background: #d1e7dd;
+}
+
+.status--hidden {
+    color: #6c757d;
+    background: #e9ecef;
+}
+
+.admin-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.admin-actions form {
+    margin: 0;
+}
+
+/* note on hidden recipes for their owner */
+.hidden-note {
+    margin: 0 0 10px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    color: #664d03;
+    background: #fff3cd;
+    border-radius: var(--radius);
 }
 
 /* ---------- About page ---------- */
@@ -1165,6 +1444,10 @@ a {
 
     .contact {
         grid-template-columns: 1fr;
+    }
+
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .contact__info,

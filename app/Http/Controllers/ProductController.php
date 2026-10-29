@@ -14,18 +14,50 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     //
-    public function index(): View
+    public function index(Request $request): View
     {
+        // de waarden uit de url, bv. /products?search=cake&category=3
+        $search = $request->input('search');
+        $categoryId = $request->input('category');
+
         // with() haalt de makers en categorieën in één keer op, in plaats van een query per product
-        $products = Product::with(['user', 'category'])->get();
+        $query = Product::with(['user', 'category']);
+
+        // alleen zichtbare recepten, plus je eigen verborgen recepten (zodat je ziet dat ze verborgen zijn)
+        $query->where(function ($q) {
+            $q->where('is_visible', true)
+                ->orWhere('user_id', Auth::id());
+        });
+
+        // zoeken: naam OF beschrijving bevat de zoekterm
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // filteren: alleen producten uit de gekozen categorie
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        // pas hier wordt de query echt uitgevoerd
+        $products = $query->latest()->get();
+
+        // voor de filterknoppen
+        $categories = Category::orderBy('id')->get();
 
         $user = auth()->user();
 
-        return view('products.index', compact('products', 'user'));
+        return view('products.index', compact('products', 'user', 'categories', 'search', 'categoryId'));
     }
 
     public function show(Product $product)
     {
+        // verborgen recepten: alleen de maker en de admin (zie ProductPolicy)
+        Gate::authorize('view', $product);
+
         return view('products.show', compact('product'));
     }
 
@@ -114,7 +146,10 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()->route('products.index')
+        // kwam je van de admin pagina? dan ga je daar weer naartoe
+        $backTo = str_contains(url()->previous(), '/admin') ? route('admin.index') : route('products.index');
+
+        return redirect($backTo)
             ->with('status', 'Product deleted successfully.');
     }
 }

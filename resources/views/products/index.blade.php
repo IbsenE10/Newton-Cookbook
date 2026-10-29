@@ -3,7 +3,7 @@
         <header class="page-header">
             <div>
                 <h1 class="page-header__title">Products</h1>
-                <p class="page-header__subtitle">{{ $products->count() }} {{ Str::plural('dish', $products->count()) }} shared by our cooks</p>
+                <p class="page-header__subtitle">Recipes shared by our cooks</p>
             </div>
 
             @auth
@@ -15,7 +15,49 @@
             <p class="alert">{{ session('status') }}</p>
         @endif
 
-        @if ($products->isEmpty())
+        {{-- Zoek- en filterbalk --}}
+        <div class="filter-bar">
+            {{-- method GET: de zoekterm komt in de url, bv. /products?search=cake --}}
+            <form method="GET" action="{{ route('products.index') }}" class="search-box">
+                {{-- gekozen categorie onthouden als je zoekt --}}
+                @if ($categoryId)
+                    <input type="hidden" name="category" value="{{ $categoryId }}">
+                @endif
+
+                <input type="search" name="search" value="{{ $search }}" placeholder="Search dishes, e.g. pasta or cake..." aria-label="Search dishes">
+                <button type="submit" class="btn btn--primary">Search</button>
+            </form>
+
+            {{-- de knoppen zijn gewone links; array_filter haalt lege waarden uit de url --}}
+            <nav class="filter-pills" aria-label="Filter by category">
+                <a href="{{ route('products.index', array_filter(['search' => $search])) }}"
+                   class="pill {{ ! $categoryId ? 'is-active' : '' }}">All</a>
+
+                @foreach ($categories as $category)
+                    <a href="{{ route('products.index', array_filter(['search' => $search, 'category' => $category->id])) }}"
+                       class="pill pill--{{ Str::slug($category->name) }} {{ $categoryId == $category->id ? 'is-active' : '' }}">{{ $category->name }}</a>
+                @endforeach
+            </nav>
+        </div>
+
+        {{-- Hoeveel resultaten, alleen als er gezocht of gefilterd wordt --}}
+        @if ($search || $categoryId)
+            <p class="results-info">
+                {{ $products->count() }} {{ Str::plural('result', $products->count()) }}
+                @if ($search) for "<strong>{{ $search }}</strong>" @endif
+                @if ($categoryId) in <strong>{{ $categories->firstWhere('id', $categoryId)?->name }}</strong> @endif
+                · <a href="{{ route('products.index') }}">Clear filters</a>
+            </p>
+        @endif
+
+        @if ($products->isEmpty() && ($search || $categoryId))
+            <div class="card empty-state">
+                <img src="{{ asset('images/logo.webp') }}" alt="">
+                <h2>No dishes found</h2>
+                <p>Try another word or a different category.</p>
+                <a href="{{ route('products.index') }}" class="btn btn--primary">Show all dishes</a>
+            </div>
+        @elseif ($products->isEmpty())
             <div class="card empty-state">
                 <img src="{{ asset('images/logo.webp') }}" alt="">
                 <h2>No products yet</h2>
@@ -49,6 +91,10 @@
                                 <a href="{{ route('products.show', $product) }}">{{ $product->name }}</a>
                             </h2>
                             <p class="product-card__author">by {{ $product->user?->name ?? 'unknown cook' }}</p>
+                            {{-- alleen de maker ziet zijn eigen verborgen recepten hier --}}
+                            @unless ($product->is_visible)
+                                <p class="hidden-note">Hidden by the admin. Only you can see this recipe.</p>
+                            @endunless
                             <p class="product-card__text">{{ Str::limit($product->description, 110) }}</p>
 
                             <div class="product-card__actions">
