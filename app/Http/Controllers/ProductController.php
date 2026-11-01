@@ -104,6 +104,8 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        Gate::authorize('create', Product::class);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
@@ -129,6 +131,7 @@ class ProductController extends Controller
 
     public function create(): View
     {
+        Gate::authorize('create', Product::class);
         // voor de dropdown
         $categories = Category::orderBy('id')->get();
 
