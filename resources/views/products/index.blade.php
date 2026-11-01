@@ -6,9 +6,13 @@
                 <p class="page-header__subtitle">Recipes shared by our cooks</p>
             </div>
 
-            @auth
+            @can('create', App\Models\Product::class)
                 <a href="{{ route('products.create') }}" class="btn btn--primary">+ Create product</a>
-            @endauth
+            @else
+                @auth
+                    <p class="hidden-note">You can add recipes after logging in 3 times ({{ auth()->user()->login_count }}/3).</p>
+                @endauth
+            @endcan
         </header>
 
         @if (session('status'))
