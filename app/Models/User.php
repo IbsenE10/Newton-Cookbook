@@ -23,8 +23,10 @@ class User extends Authenticatable
         return $this->hasMany(Product::class);
     }
 
-    public function isAdmin(): bool{
-        return $this->id === 1; //Pepo is only Admin
+    // de database bepaalt wie admin is (kolom is_admin)
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
     }
 
     /**
