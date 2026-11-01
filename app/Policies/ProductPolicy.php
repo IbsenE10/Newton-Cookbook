@@ -39,4 +39,16 @@ class ProductPolicy
     {
         return $user->id === $product->user_id;
     }
+
+    // recepten toevoegen mag pas na minimaal 3 keer inloggen
+    public function create(User $user): Response
+    {
+        if ($user->login_count >= 3) {
+            return Response::allow();
+        }
+
+        return Response::deny(
+            'You can add recipes after logging in 3 times. You have logged in ' . $user->login_count . ' time(s) so far.'
+        );
+    }
 }
