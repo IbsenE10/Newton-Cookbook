@@ -26,6 +26,8 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $request->user()->increment('login_count');
+
         $request->session()->regenerate();
 
         return redirect()->intended(route('dashboard', absolute: false));
